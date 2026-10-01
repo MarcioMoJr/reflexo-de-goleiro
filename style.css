@@ -1,0 +1,565 @@
+/* =========================================
+   CONFIGURAÇÕES GERAIS
+   ========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #07110b;
+    --panel: #0d1811;
+    --line: #223126;
+    --text: #f2f5f2;
+    --muted: #839087;
+    --green: #9cff5b;
+    --red: #ff7078;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+
+/* =========================================
+   CONTAINER PRINCIPAL
+   ========================================= */
+
+.aplicativo {
+    width: 1160px;
+    margin: 0 auto;
+    padding: 26px 0 20px;
+}
+
+
+/* =========================================
+   CABEÇALHO
+   ========================================= */
+
+.cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+}
+
+.marca {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.marca-simbolo {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border: 1px solid #35503a;
+    border-radius: 8px;
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.rotulo {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+}
+
+h1,
+h2,
+p {
+    margin-top: 0;
+}
+
+h1 {
+    margin-bottom: 0;
+    font-size: 20px;
+}
+
+h2 {
+    margin: 4px 0 0;
+    font-size: 26px;
+}
+
+
+/* =========================================
+   CONEXÃO COM O ARDUINO
+   ========================================= */
+
+.area-conexao {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status-conexao {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #a4aea7;
+    font-size: 14px;
+}
+
+.ponto {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4b564d;
+}
+
+.ponto.conectado {
+    background: var(--green);
+}
+
+
+/* =========================================
+   BOTÃO DE CONEXÃO
+   ========================================= */
+
+.botao {
+    padding: 9px 13px;
+    border: 1px solid #304236;
+    border-radius: 7px;
+    color: var(--text);
+    background: transparent;
+    font-size: 13px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.botao:hover:not(:disabled) {
+    border-color: var(--green);
+    color: var(--green);
+    background: #101d14;
+}
+
+.botao:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+
+/* =========================================
+   ÁREA PRINCIPAL
+   ========================================= */
+
+.layout-principal {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 18px;
+    margin-top: 18px;
+}
+
+.placar,
+.painel-ranking {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--panel);
+}
+
+
+/* =========================================
+   PLACAR
+   ========================================= */
+
+.placar {
+    min-height: 620px;
+    padding: 24px 28px;
+}
+
+.cabecalho-placar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.estado-jogo {
+    margin: 6px 0 0;
+    color: #6f7c73;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.estado-jogo.live {
+    color: var(--green);
+}
+
+.estado-jogo.finished {
+    color: #d8e3d9;
+}
+
+.indicador-meta {
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: #9ba89f;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+
+/* =========================================
+   PARTICIPANTE
+   ========================================= */
+
+.area-participante {
+    width: 390px;
+    margin: 28px auto 0;
+}
+
+.area-participante label {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-align: center;
+}
+
+.area-participante input {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid #2a3a2e;
+    border-radius: 8px;
+    outline: 0;
+    color: var(--text);
+    background: #08100b;
+    text-align: center;
+    font-size: 17px;
+}
+
+.area-participante input:focus {
+    border-color: #4a7544;
+}
+
+
+/* =========================================
+   NÚMERO PRINCIPAL DO PLACAR
+   ========================================= */
+
+.destaque-placar {
+    margin-top: 22px;
+    text-align: center;
+}
+
+.palavra-placar {
+    color: #dbe5dc;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.25em;
+}
+
+.linha-placar {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    height: 205px;
+}
+
+.numero-placar {
+    color: #f7faf7;
+    font-size: 190px;
+    font-weight: 900;
+    line-height: 0.8;
+}
+
+.meta-placar {
+    margin-left: 14px;
+    color: #7f8e83;
+    font-size: 38px;
+    font-weight: 800;
+}
+
+
+/* =========================================
+   ACERTOS / ERROS / RESTANTES
+   ========================================= */
+
+.pontuacao-secundaria {
+    display: flex;
+    justify-content: center;
+    gap: 26px;
+    margin-top: 24px;
+}
+
+.item-secundario {
+    min-width: 100px;
+    text-align: center;
+}
+
+.item-secundario span {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.item-secundario b {
+    display: block;
+    margin-top: 4px;
+    font-size: 31px;
+}
+
+.item-secundario:first-child b {
+    color: var(--red);
+}
+
+.divisor-secundario {
+    width: 1px;
+    height: 38px;
+    background: var(--line);
+}
+
+
+/* =========================================
+   BARRA DE PROGRESSO
+   ========================================= */
+
+.area-progresso {
+    width: 650px;
+    margin: 28px auto 0;
+}
+
+.segmentos-progresso {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 5px;
+}
+
+.segmento-progresso {
+    height: 6px;
+    border-radius: 4px;
+    background: #1a241d;
+}
+
+.segmento-progresso.ativo {
+    background: var(--green);
+}
+
+
+/* =========================================
+   BOTÃO INICIAR PARTIDA
+   ========================================= */
+
+.botao-iniciar {
+    display: block;
+    width: 390px;
+    height: 52px;
+    margin: 24px auto 0;
+    border: 1px solid #8fef55;
+    border-radius: 8px;
+    color: #071008;
+    background: var(--green);
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    transition: 0.2s;
+}
+
+.botao-iniciar:hover:not(:disabled) {
+    background: #aaff72;
+    transform: translateY(-2px);
+}
+
+.botao-iniciar:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.botao-iniciar:disabled {
+    cursor: not-allowed;
+    opacity: 0.35;
+}
+
+.botao-iniciar span {
+    margin-left: 8px;
+}
+
+
+/* =========================================
+   STATUS DA PARTIDA
+   ========================================= */
+
+.status-jogo {
+    min-height: 18px;
+    margin: 12px 0 0;
+    color: #7c887f;
+    font-size: 13px;
+    text-align: center;
+}
+
+.status-jogo.live {
+    color: var(--green);
+}
+
+.status-jogo.error {
+    color: var(--red);
+}
+
+
+/* =========================================
+   HISTÓRICO / RANKING
+   ========================================= */
+
+.painel-ranking {
+    padding: 20px;
+}
+
+.cabecalho-ranking {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+}
+
+.botao-limpar {
+    padding: 4px 0;
+    border: 0;
+    color: #839087;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.botao-limpar:hover {
+    color: var(--green);
+}
+
+
+/* =========================================
+   TABELA DO RANKING
+   ========================================= */
+
+.tabela-ranking {
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    padding: 10px 4px;
+    color: #758279;
+    border-bottom: 1px solid var(--line);
+    font-size: 10px;
+    font-weight: 800;
+    text-align: left;
+}
+
+td {
+    padding: 11px 4px;
+    border-bottom: 1px solid #18241b;
+    font-size: 15px;
+}
+
+td:first-child {
+    width: 25px;
+    color: #657268;
+    font-weight: 800;
+}
+
+td:nth-child(2) {
+    max-width: 120px;
+    overflow: hidden;
+    color: #e0e8e1;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+td:nth-child(3) {
+    color: var(--green);
+    font-weight: 800;
+    text-align: center;
+}
+
+td:nth-child(4) {
+    color: var(--red);
+    font-weight: 800;
+    text-align: center;
+}
+
+tbody tr {
+    transition: 0.2s;
+}
+
+tbody tr:hover {
+    background: #101c14;
+}
+
+
+/* =========================================
+   RANKING VAZIO
+   ========================================= */
+
+.ranking-vazio {
+    padding: 34px 8px 20px;
+    color: #69756d;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+
+/* =========================================
+   RODAPÉ
+   ========================================= */
+
+footer {
+    margin-top: 10px;
+    color: #536057;
+    font-size: 11px;
+    text-align: right;
+}
+
+
+/* =========================================
+   AVISO TEMPORÁRIO
+   ========================================= */
+
+.aviso {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    padding: 10px 13px;
+    border: 1px solid #304236;
+    border-radius: 7px;
+    color: #eaf2ea;
+    background: #0c160f;
+    font-size: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(8px);
+    transition: 0.2s;
+}
+
+.aviso.show {
+    opacity: 1;
+    transform: translateY(0);
+}

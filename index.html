@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Reflexo de Goleiro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="aplicativo">
+
+        <!-- CABEÇALHO -->
+        <header class="cabecalho">
+
+            <div class="marca">
+                <span class="marca-simbolo">RG</span>
+
+                <div>
+                    <p class="rotulo">PROJETO ARDUINO</p>
+                    <h1>Reflexo de Goleiro</h1>
+                </div>
+            </div>
+
+            <!-- CONEXÃO COM O ARDUINO -->
+            <div class="area-conexao">
+
+                <div class="status-conexao">
+                    <span id="pontoConexao" class="ponto"></span>
+                    <span id="textoConexao">Desconectado</span>
+                </div>
+
+                <button
+                    id="botaoConectar"
+                    class="botao"
+                    type="button"
+                >
+                    Conectar Arduino
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- ÁREA PRINCIPAL -->
+        <section class="layout-principal">
+
+            <!-- PLACAR -->
+            <section class="placar">
+
+                <div class="cabecalho-placar">
+
+                    <div>
+                        <p class="rotulo">PLACAR DO GOLEIRO</p>
+
+                        <p
+                            id="estadoJogo"
+                            class="estado-jogo"
+                        >
+                            AGUARDANDO PARTIDA
+                        </p>
+                    </div>
+
+                    <span class="indicador-meta">
+                        META 10
+                    </span>
+
+                </div>
+
+
+                <!-- PARTICIPANTE -->
+                <div class="area-participante">
+
+                    <label for="nomeParticipante">
+                        PARTICIPANTE
+                    </label>
+
+                    <input
+                        id="nomeParticipante"
+                        type="text"
+                        maxlength="25"
+                        placeholder="Digite o nome"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <!-- PLACAR PRINCIPAL -->
+                <div class="destaque-placar">
+
+                    <div class="palavra-placar">
+                        ACERTOS
+                    </div>
+
+                    <div class="linha-placar">
+
+                        <span
+                            id="acertos"
+                            class="numero-placar"
+                        >
+                            0
+                        </span>
+
+                        <span class="meta-placar">
+                            / 10
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- INFORMAÇÕES SECUNDÁRIAS -->
+                <div class="pontuacao-secundaria">
+
+                    <div class="item-secundario">
+                        <span>ERROS</span>
+                        <b id="erros">0</b>
+                    </div>
+
+                    <div class="divisor-secundario"></div>
+
+                    <div class="item-secundario">
+                        <span>RESTANTES</span>
+                        <b id="restantes">10</b>
+                    </div>
+
+                </div>
+
+
+                <!-- PROGRESSO -->
+                <div class="area-progresso">
+
+                    <div
+                        id="segmentosProgresso"
+                        class="segmentos-progresso"
+                    ></div>
+
+                </div>
+
+
+                <!-- INICIAR PARTIDA -->
+                <button
+                    id="botaoIniciar"
+                    class="botao-iniciar"
+                    type="button"
+                    disabled
+                >
+                    INICIAR PARTIDA
+                    <span>→</span>
+                </button>
+
+
+                <!-- STATUS DO JOGO -->
+                <p
+                    id="statusJogo"
+                    class="status-jogo"
+                >
+                    Conecte o Arduino para começar.
+                </p>
+
+            </section>
+
+
+            <!-- HISTÓRICO / RANKING -->
+            <aside class="painel-ranking">
+
+                <div class="cabecalho-ranking">
+
+                    <div>
+                        <p class="rotulo">HISTÓRICO</p>
+                        <h2>Ranking</h2>
+                    </div>
+
+                    <button
+                        id="botaoLimparRanking"
+                        class="botao-limpar"
+                        type="button"
+                    >
+                        Limpar
+                    </button>
+
+                </div>
+
+
+                <!-- TABELA -->
+                <div class="tabela-ranking">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>PARTICIPANTE</th>
+                                <th>ACERTOS</th>
+                                <th>ERROS</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="corpoRanking"></tbody>
+
+                    </table>
+
+
+                    <!-- RANKING VAZIO -->
+                    <div
+                        id="rankingVazio"
+                        class="ranking-vazio"
+                    >
+                        Nenhuma partida registrada.
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </section>
+
+
+        <!-- RODAPÉ -->
+        <footer>
+            Semana Midiatica • Sistemas Embarcados
+        </footer>
+
+    </main>
+
+
+    <!-- MENSAGEM TEMPORÁRIA -->
+    <div
+        id="aviso"
+        class="aviso"
+    ></div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
