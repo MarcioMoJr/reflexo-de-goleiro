@@ -42,9 +42,9 @@ button {
    ========================================= */
 
 .aplicativo {
-    width: 1160px;
+    width: 1450px;
     margin: 0 auto;
-    padding: 26px 0 20px;
+    padding: 33px 0 25px;
 }
 
 
@@ -56,32 +56,32 @@ button {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: 16px;
+    padding-bottom: 20px;
     border-bottom: 1px solid var(--line);
 }
 
 .marca {
     display: flex;
     align-items: center;
-    gap: 11px;
+    gap: 14px;
 }
 
 .marca-simbolo {
     display: grid;
-    width: 36px;
-    height: 36px;
+    width: 45px;
+    height: 45px;
     place-items: center;
     border: 1px solid #35503a;
-    border-radius: 8px;
+    border-radius: 10px;
     color: var(--green);
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 800;
 }
 
 .rotulo {
     margin: 0;
     color: var(--muted);
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 800;
     letter-spacing: 0.14em;
 }
@@ -94,12 +94,12 @@ p {
 
 h1 {
     margin-bottom: 0;
-    font-size: 20px;
+    font-size: 25px;
 }
 
 h2 {
-    margin: 4px 0 0;
-    font-size: 26px;
+    margin: 5px 0 0;
+    font-size: 33px;
 }
 
 
@@ -110,20 +110,20 @@ h2 {
 .area-conexao {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 15px;
 }
 
 .status-conexao {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 9px;
     color: #a4aea7;
-    font-size: 14px;
+    font-size: 18px;
 }
 
 .ponto {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: #4b564d;
 }
@@ -138,12 +138,12 @@ h2 {
    ========================================= */
 
 .botao {
-    padding: 9px 13px;
+    padding: 11px 16px;
     border: 1px solid #304236;
-    border-radius: 7px;
+    border-radius: 9px;
     color: var(--text);
     background: transparent;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
     transition: 0.2s;
 }
@@ -166,15 +166,15 @@ h2 {
 
 .layout-principal {
     display: grid;
-    grid-template-columns: 1fr 280px;
-    gap: 18px;
-    margin-top: 18px;
+    grid-template-columns: 1fr 438px;
+    gap: 23px;
+    margin-top: 23px;
 }
 
 .placar,
 .painel-ranking {
     border: 1px solid var(--line);
-    border-radius: 16px;
+    border-radius: 20px;
     background: var(--panel);
 }
 
@@ -184,8 +184,8 @@ h2 {
    ========================================= */
 
 .placar {
-    min-height: 620px;
-    padding: 24px 28px;
+    min-height: 775px;
+    padding: 30px 35px;
 }
 
 .cabecalho-placar {
@@ -195,9 +195,9 @@ h2 {
 }
 
 .estado-jogo {
-    margin: 6px 0 0;
+    margin: 8px 0 0;
     color: #6f7c73;
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 700;
     letter-spacing: 0.08em;
 }
@@ -211,11 +211,11 @@ h2 {
 }
 
 .indicador-meta {
-    padding: 7px 10px;
+    padding: 9px 13px;
     border: 1px solid var(--line);
     border-radius: 999px;
     color: #9ba89f;
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 800;
 }
 
@@ -225,15 +225,15 @@ h2 {
    ========================================= */
 
 .area-participante {
-    width: 390px;
-    margin: 28px auto 0;
+    width: 488px;
+    margin: 35px auto 0;
 }
 
 .area-participante label {
     display: block;
-    margin-bottom: 7px;
+    margin-bottom: 9px;
     color: var(--muted);
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 800;
     letter-spacing: 0.12em;
     text-align: center;
@@ -241,15 +241,15 @@ h2 {
 
 .area-participante input {
     width: 100%;
-    height: 44px;
-    padding: 0 12px;
+    height: 55px;
+    padding: 0 15px;
     border: 1px solid #2a3a2e;
-    border-radius: 8px;
+    border-radius: 10px;
     outline: 0;
     color: var(--text);
     background: #08100b;
     text-align: center;
-    font-size: 17px;
+    font-size: 21px;
 }
 
 .area-participante input:focus {
@@ -258,17 +258,83 @@ h2 {
 
 
 /* =========================================
+   NÍVEL DE DIFICULDADE
+   Os botões são criados pelo script.js a
+   partir da lista NIVEIS.
+   ========================================= */
+
+.area-nivel {
+    width: 488px;
+    margin: 15px auto 0;
+}
+
+.seletor-nivel {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.botao-nivel {
+    height: 48px;
+    border: 1px solid #2a3a2e;
+    border-radius: 10px;
+    color: var(--text);
+    background: #08100b;
+    font-size: 18px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.botao-nivel .tempo-nivel {
+    margin-left: 6px;
+    color: var(--muted);
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.botao-nivel:hover:not(:disabled) {
+    border-color: #4a7544;
+}
+
+.botao-nivel.ativo {
+    border-color: var(--green);
+    color: var(--green);
+    background: #101d14;
+}
+
+.botao-nivel.ativo .tempo-nivel {
+    color: var(--green);
+    opacity: 0.7;
+}
+
+.botao-nivel:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+.botao-nivel.ativo:disabled {
+    opacity: 0.9;
+}
+
+.botao-nivel:focus-visible,
+.aba-ranking:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* =========================================
    NÚMERO PRINCIPAL DO PLACAR
    ========================================= */
 
 .destaque-placar {
-    margin-top: 22px;
+    margin-top: 28px;
     text-align: center;
 }
 
 .palavra-placar {
     color: #dbe5dc;
-    font-size: 15px;
+    font-size: 19px;
     font-weight: 800;
     letter-spacing: 0.25em;
 }
@@ -277,50 +343,51 @@ h2 {
     display: flex;
     align-items: baseline;
     justify-content: center;
-    height: 205px;
+    height: 219px;
 }
 
 .numero-placar {
     color: #f7faf7;
-    font-size: 190px;
+    font-size: 238px;
     font-weight: 900;
     line-height: 0.8;
 }
 
 .meta-placar {
-    margin-left: 14px;
+    margin-left: 18px;
     color: #7f8e83;
-    font-size: 38px;
+    font-size: 48px;
     font-weight: 800;
 }
 
 
 /* =========================================
-   ACERTOS / ERROS / RESTANTES
+   ERROS / RESTANTES / ÚLTIMO / MÉDIA
    ========================================= */
 
 .pontuacao-secundaria {
     display: flex;
     justify-content: center;
-    gap: 26px;
-    margin-top: 24px;
+    gap: 33px;
+    margin-top: 30px;
 }
 
 .item-secundario {
-    min-width: 100px;
+    min-width: 125px;
     text-align: center;
 }
 
 .item-secundario span {
     color: var(--muted);
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 800;
 }
 
 .item-secundario b {
     display: block;
-    margin-top: 4px;
-    font-size: 31px;
+    margin-top: 5px;
+    font-size: 39px;
+    font-variant-numeric: tabular-nums;
 }
 
 .item-secundario:first-child b {
@@ -329,7 +396,7 @@ h2 {
 
 .divisor-secundario {
     width: 1px;
-    height: 38px;
+    height: 48px;
     background: var(--line);
 }
 
@@ -339,19 +406,19 @@ h2 {
    ========================================= */
 
 .area-progresso {
-    width: 650px;
-    margin: 28px auto 0;
+    width: 813px;
+    margin: 35px auto 0;
 }
 
 .segmentos-progresso {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
-    gap: 5px;
+    gap: 6px;
 }
 
 .segmento-progresso {
-    height: 6px;
-    border-radius: 4px;
+    height: 8px;
+    border-radius: 5px;
     background: #1a241d;
 }
 
@@ -366,14 +433,14 @@ h2 {
 
 .botao-iniciar {
     display: block;
-    width: 390px;
-    height: 52px;
-    margin: 24px auto 0;
+    width: 488px;
+    height: 65px;
+    margin: 30px auto 0;
     border: 1px solid #8fef55;
-    border-radius: 8px;
+    border-radius: 10px;
     color: #071008;
     background: var(--green);
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 900;
     letter-spacing: 0.1em;
     transition: 0.2s;
@@ -394,7 +461,7 @@ h2 {
 }
 
 .botao-iniciar span {
-    margin-left: 8px;
+    margin-left: 10px;
 }
 
 
@@ -403,10 +470,10 @@ h2 {
    ========================================= */
 
 .status-jogo {
-    min-height: 18px;
-    margin: 12px 0 0;
+    min-height: 23px;
+    margin: 15px 0 0;
     color: #7c887f;
-    font-size: 13px;
+    font-size: 16px;
     text-align: center;
 }
 
@@ -424,23 +491,23 @@ h2 {
    ========================================= */
 
 .painel-ranking {
-    padding: 20px;
+    padding: 25px;
 }
 
 .cabecalho-ranking {
     display: flex;
     align-items: end;
     justify-content: space-between;
-    padding-bottom: 12px;
+    padding-bottom: 15px;
     border-bottom: 1px solid var(--line);
 }
 
 .botao-limpar {
-    padding: 4px 0;
+    padding: 5px 0;
     border: 0;
     color: #839087;
     background: transparent;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
     transition: 0.2s;
 }
@@ -451,11 +518,54 @@ h2 {
 
 
 /* =========================================
+   ABAS DO RANKING (UMA POR NÍVEL)
+   ========================================= */
+
+.abas-ranking {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.aba-ranking {
+    flex: 1;
+    padding: 9px 0;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    color: var(--muted);
+    background: transparent;
+    font-size: 16px;
+    font-weight: 800;
+    transition: 0.2s;
+}
+
+.aba-ranking:hover {
+    color: var(--text);
+    border-color: #35503a;
+}
+
+.aba-ranking.ativa {
+    border-color: #35503a;
+    color: var(--green);
+    background: #101d14;
+}
+
+
+/* =========================================
    TABELA DO RANKING
+   Sem limite de 10: a lista rola dentro do
+   painel em vez de esticar a página.
    ========================================= */
 
 .tabela-ranking {
     overflow: hidden;
+}
+
+.ranking-rolagem {
+    max-height: 588px;
+    overflow-y: auto;
+    scrollbar-color: #304236 transparent;
+    scrollbar-width: thin;
 }
 
 table {
@@ -464,28 +574,32 @@ table {
 }
 
 th {
-    padding: 10px 4px;
+    padding: 13px 5px;
     color: #758279;
     border-bottom: 1px solid var(--line);
-    font-size: 10px;
+    font-size: 14px;
     font-weight: 800;
     text-align: left;
 }
 
+th:nth-child(n+3) {
+    text-align: center;
+}
+
 td {
-    padding: 11px 4px;
+    padding: 14px 5px;
     border-bottom: 1px solid #18241b;
-    font-size: 15px;
+    font-size: 19px;
 }
 
 td:first-child {
-    width: 25px;
+    width: 31px;
     color: #657268;
     font-weight: 800;
 }
 
 td:nth-child(2) {
-    max-width: 120px;
+    max-width: 131px;
     overflow: hidden;
     color: #e0e8e1;
     font-weight: 700;
@@ -505,6 +619,14 @@ td:nth-child(4) {
     text-align: center;
 }
 
+td:nth-child(5) {
+    color: #d8e3d9;
+    font-size: 18px;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    white-space: nowrap;
+}
+
 tbody tr {
     transition: 0.2s;
 }
@@ -519,9 +641,9 @@ tbody tr:hover {
    ========================================= */
 
 .ranking-vazio {
-    padding: 34px 8px 20px;
+    padding: 43px 10px 25px;
     color: #69756d;
-    font-size: 13px;
+    font-size: 16px;
     line-height: 1.4;
     text-align: center;
 }
@@ -532,9 +654,9 @@ tbody tr:hover {
    ========================================= */
 
 footer {
-    margin-top: 10px;
+    margin-top: 13px;
     color: #536057;
-    font-size: 11px;
+    font-size: 15px;
     text-align: right;
 }
 
@@ -545,17 +667,17 @@ footer {
 
 .aviso {
     position: fixed;
-    right: 18px;
-    bottom: 18px;
-    padding: 10px 13px;
+    right: 23px;
+    bottom: 23px;
+    padding: 13px 16px;
     border: 1px solid #304236;
-    border-radius: 7px;
+    border-radius: 9px;
     color: #eaf2ea;
     background: #0c160f;
-    font-size: 13px;
+    font-size: 16px;
     opacity: 0;
     pointer-events: none;
-    transform: translateY(8px);
+    transform: translateY(10px);
     transition: 0.2s;
 }
 

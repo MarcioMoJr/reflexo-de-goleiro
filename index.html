@@ -88,6 +88,21 @@
                 </div>
 
 
+                <!-- NÍVEL DE DIFICULDADE
+                     Os botões são criados pelo script.js
+                     a partir da lista NIVEIS. -->
+                <div class="area-nivel">
+
+                    <div
+                        id="seletorNivel"
+                        class="seletor-nivel"
+                        role="group"
+                        aria-label="Nível de dificuldade"
+                    ></div>
+
+                </div>
+
+
                 <!-- PLACAR PRINCIPAL -->
                 <div class="destaque-placar">
 
@@ -126,6 +141,20 @@
                     <div class="item-secundario">
                         <span>RESTANTES</span>
                         <b id="restantes">10</b>
+                    </div>
+
+                    <div class="divisor-secundario"></div>
+
+                    <div class="item-secundario">
+                        <span>ÚLTIMO</span>
+                        <b id="ultimoTempo">—</b>
+                    </div>
+
+                    <div class="divisor-secundario"></div>
+
+                    <div class="item-secundario">
+                        <span>MÉDIA</span>
+                        <b id="mediaTempo">—</b>
                     </div>
 
                 </div>
@@ -186,23 +215,38 @@
                 </div>
 
 
+                <!-- ABAS: UM RANKING POR NÍVEL
+                     Criadas pelo script.js. -->
+                <div
+                    id="abasRanking"
+                    class="abas-ranking"
+                    role="group"
+                    aria-label="Ranking por nível"
+                ></div>
+
+
                 <!-- TABELA -->
                 <div class="tabela-ranking">
 
-                    <table>
+                    <div class="ranking-rolagem">
 
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>PARTICIPANTE</th>
-                                <th>ACERTOS</th>
-                                <th>ERROS</th>
-                            </tr>
-                        </thead>
+                        <table>
 
-                        <tbody id="corpoRanking"></tbody>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>PARTICIPANTE</th>
+                                    <th>ACERTOS</th>
+                                    <th>ERROS</th>
+                                    <th title="Tempo médio de reação">TEMPO</th>
+                                </tr>
+                            </thead>
 
-                    </table>
+                            <tbody id="corpoRanking"></tbody>
+
+                        </table>
+
+                    </div>
 
 
                     <!-- RANKING VAZIO -->
@@ -210,7 +254,7 @@
                         id="rankingVazio"
                         class="ranking-vazio"
                     >
-                        Nenhuma partida registrada.
+                        Nenhuma partida registrada neste nível.
                     </div>
 
                 </div>

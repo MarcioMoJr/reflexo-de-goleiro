@@ -15,8 +15,14 @@ const acertosElemento = buscar("acertos");
 const errosElemento = buscar("erros");
 const restantesElemento = buscar("restantes");
 
+const ultimoTempoElemento = buscar("ultimoTempo");
+const mediaTempoElemento = buscar("mediaTempo");
+
 const segmentosProgresso = buscar("segmentosProgresso");
 
+const seletorNivel = buscar("seletorNivel");
+
+const abasRanking = buscar("abasRanking");
 const corpoRanking = buscar("corpoRanking");
 const rankingVazio = buscar("rankingVazio");
 
@@ -24,9 +30,35 @@ const botaoLimparRanking = buscar("botaoLimparRanking");
 const aviso = buscar("aviso");
 
 
+// Precisa ser igual ao META_PONTOS do .ino
 const TOTAL_ACERTOS = 10;
 
-const CHAVE_RANKING = "reflexo-goleiro-ranking-v1";
+// v2: o ranking agora guarda nível e tempo médio.
+// O ranking antigo (v1) fica esquecido no navegador,
+// sem atrapalhar.
+const CHAVE_RANKING = "reflexo-goleiro-ranking-v2";
+
+// Teto de segurança por nível. É bem alto de propósito
+// (o localStorage aguenta bem mais que isso).
+const LIMITE_POR_NIVEL = 1000;
+
+// Quanto tempo esperar o Arduino confirmar o início
+const TEMPO_ESPERA_ARDUINO = 4000;
+
+// Usado só pra ordenar resultados sem tempo
+const SEM_TEMPO = 1e9;
+
+// Tempo (ms) que cada alvo fica aceso em cada nível.
+// É aqui que se muda a dificuldade; o Arduino recebe o
+// valor no comando START|tempo e só valida o intervalo.
+// Os botões do seletor e as abas do ranking nascem desta lista.
+const NIVEIS = {
+    facil:   { nome: "Fácil",   tempo: 2000 },
+    normal:  { nome: "Normal",  tempo: 1500 },
+    dificil: { nome: "Difícil", tempo: 800}
+};
+
+const NIVEL_PADRAO = "normal";
 
 
 let porta = null;
@@ -37,13 +69,83 @@ let conectado = false;
 
 let partidaAtiva = false;
 
+// Comando START enviado, ainda sem JOGO_INICIADO de volta
+let aguardandoArduino = false;
+
 let participanteAtual = "";
 
 let acertos = 0;
 
 let erros = 0;
 
+// Tempos de reação (ms) dos acertos da partida atual
+let temposAcertos = [];
+
+// Nível escolhido no seletor
+let nivelSelecionado = NIVEL_PADRAO;
+
+// Nível travado no momento em que a partida começa
+let nivelPartida = NIVEL_PADRAO;
+
+// Nível cujo ranking está aparecendo
+let nivelRanking = NIVEL_PADRAO;
+
 let tempoAviso;
+
+let tempoEspera;
+
+
+function emPartida() {
+
+    return partidaAtiva || aguardandoArduino;
+
+}
+
+
+function formatarTempo(ms) {
+
+    if (
+        typeof ms !== "number" ||
+        !Number.isFinite(ms)
+    ) {
+        return "—";
+    }
+
+    return (
+        (ms / 1000)
+            .toFixed(2)
+            .replace(".", ",") +
+        " s"
+    );
+
+}
+
+
+function formatarSegundos(ms) {
+
+    return (
+        (ms / 1000).toLocaleString("pt-BR") +
+        " s"
+    );
+
+}
+
+
+function calcularMedia() {
+
+    if (!temposAcertos.length) return null;
+
+    const soma =
+        temposAcertos.reduce(
+            (total, tempo) => total + tempo,
+            0
+        );
+
+    return Math.round(
+        soma / temposAcertos.length
+    );
+
+}
 
 
 function mostrarAviso(mensagem) {
@@ -82,12 +184,22 @@ function definirEstadoJogo(mensagem, tipo = "") {
 }
 
 
-function atualizarBotaoIniciar() {
+// Habilita/desabilita o botão de iniciar e trava o
+// seletor de nível enquanto a partida está rolando.
+function atualizarControles() {
+
+    const ocupado = emPartida();
 
     botaoIniciar.disabled =
         !nomeParticipante.value.trim() ||
-        partidaAtiva ||
+        ocupado ||
         !conectado;
+
+    seletorNivel
+        .querySelectorAll("button")
+        .forEach((botao) => {
+            botao.disabled = ocupado;
+        });
 
 }
 
@@ -126,6 +238,17 @@ function atualizarPlacar() {
     restantesElemento.textContent =
         Math.max(TOTAL_ACERTOS - acertos, 0);
 
+    const ultimo =
+        temposAcertos.length
+            ? temposAcertos[temposAcertos.length - 1]
+            : null;
+
+    ultimoTempoElemento.textContent =
+        formatarTempo(ultimo);
+
+    mediaTempoElemento.textContent =
+        formatarTempo(calcularMedia());
+
     mostrarProgresso();
 
 }
@@ -137,10 +260,142 @@ function zerarPlacar() {
 
     erros = 0;
 
+    temposAcertos = [];
+
     atualizarPlacar();
 
 }
 
+
+// ==========================================
+// NÍVEIS
+// ==========================================
+
+function atualizarNiveis() {
+
+    seletorNivel
+        .querySelectorAll("button")
+        .forEach((botao) => {
+
+            const ativo =
+                botao.dataset.nivel === nivelSelecionado;
+
+            botao.classList.toggle("ativo", ativo);
+
+            botao.setAttribute(
+                "aria-pressed",
+                String(ativo)
+            );
+
+        });
+
+    abasRanking
+        .querySelectorAll("button")
+        .forEach((aba) => {
+
+            const ativa =
+                aba.dataset.nivel === nivelRanking;
+
+            aba.classList.toggle("ativa", ativa);
+
+            aba.setAttribute(
+                "aria-pressed",
+                String(ativa)
+            );
+
+        });
+
+}
+
+
+function selecionarNivel(id) {
+
+    if (emPartida()) return;
+
+    nivelSelecionado = id;
+
+    // O ranking acompanha o nível escolhido
+    nivelRanking = id;
+
+    atualizarNiveis();
+
+    mostrarRanking();
+
+}
+
+
+function selecionarAbaRanking(id) {
+
+    nivelRanking = id;
+
+    atualizarNiveis();
+
+    mostrarRanking();
+
+}
+
+
+function montarNiveis() {
+
+    seletorNivel.innerHTML = "";
+
+    abasRanking.innerHTML = "";
+
+    Object.entries(NIVEIS).forEach(
+        ([id, nivel]) => {
+
+            const botao =
+                document.createElement("button");
+
+            botao.type = "button";
+
+            botao.className = "botao-nivel";
+
+            botao.dataset.nivel = id;
+
+            // Nome do nível + tempo de cada alvo
+            botao.innerHTML =
+                `${nivel.nome} ` +
+                `<span class="tempo-nivel">` +
+                `${formatarSegundos(nivel.tempo)}</span>`;
+
+            botao.addEventListener(
+                "click",
+                () => selecionarNivel(id)
+            );
+
+            seletorNivel.appendChild(botao);
+
+
+            const aba =
+                document.createElement("button");
+
+            aba.type = "button";
+
+            aba.className = "aba-ranking";
+
+            aba.dataset.nivel = id;
+
+            aba.textContent = nivel.nome;
+
+            aba.addEventListener(
+                "click",
+                () => selecionarAbaRanking(id)
+            );
+
+            abasRanking.appendChild(aba);
+
+        }
+    );
+
+    atualizarNiveis();
+
+}
+
+
+// ==========================================
+// CONEXÃO
+// ==========================================
 
 function definirEstadoConexao(estado) {
 
@@ -161,7 +416,7 @@ function definirEstadoConexao(estado) {
             ? "Desconectar"
             : "Conectar Arduino";
 
-    atualizarBotaoIniciar();
+    atualizarControles();
 
 }
 
@@ -237,6 +492,10 @@ async function conectarArduino() {
 async function desconectarArduino(mensagem = false) {
 
     partidaAtiva = false;
+
+    aguardandoArduino = false;
+
+    clearTimeout(tempoEspera);
 
     try {
 
@@ -351,24 +610,55 @@ async function lerSerial() {
 }
 
 
+// ==========================================
+// MENSAGENS DO ARDUINO
+//
+// JOGO_INICIADO|tempoMs
+// PONTOS|total|reacaoMs
+// TEMPO_ESGOTADO
+// FIM|total
+// ==========================================
+
+function limitarAcertos(valor) {
+
+    return Math.min(
+        Math.max(valor, 0),
+        TOTAL_ACERTOS
+    );
+
+}
+
+
 function tratarLinhaSerial(linha) {
 
     if (!linha) return;
 
 
-    if (linha === "JOGO_INICIADO") {
+    if (
+        linha === "JOGO_INICIADO" ||
+        linha.startsWith("JOGO_INICIADO|")
+    ) {
 
-        // O placar e a mensagem com o nome do
-        // participante já foram definidos em
-        // iniciarPartida(); aqui só confirmamos
-        // o estado, sem sobrescrever nada.
+        // O Arduino confirmou: agora a partida vale.
+        // O placar e o nome já foram definidos em
+        // iniciarPartida().
+
+        clearTimeout(tempoEspera);
+
+        aguardandoArduino = false;
 
         partidaAtiva = true;
 
-        botaoIniciar.disabled = true;
+        atualizarControles();
 
         definirEstadoJogo(
             "PARTIDA EM ANDAMENTO",
+            "live"
+        );
+
+        definirStatus(
+            `Valendo, ${participanteAtual}! ` +
+            `Nível ${NIVEIS[nivelPartida].nome}.`,
             "live"
         );
 
@@ -391,18 +681,32 @@ function tratarLinhaSerial(linha) {
 
     else if (linha.startsWith("PONTOS|")) {
 
-        const valor =
-            Number(
-                linha.split("|")[1]
-            );
+        const partes = linha.split("|");
+
+        const valor = Number(partes[1]);
 
         if (!Number.isNaN(valor)) {
 
-            acertos =
-                Math.min(
-                    Math.max(valor, 0),
-                    TOTAL_ACERTOS
-                );
+            acertos = limitarAcertos(valor);
+
+            // Tempo de reação (ms) deste acerto.
+            // Se o Arduino for uma versão antiga e não
+            // mandar o tempo, a partida segue sem ele.
+            if (
+                partes.length > 2 &&
+                partes[2] !== ""
+            ) {
+
+                const tempo = Number(partes[2]);
+
+                if (
+                    Number.isFinite(tempo) &&
+                    tempo >= 0
+                ) {
+                    temposAcertos.push(tempo);
+                }
+
+            }
 
             atualizarPlacar();
 
@@ -420,11 +724,7 @@ function tratarLinhaSerial(linha) {
 
         if (!Number.isNaN(valor)) {
 
-            acertos =
-                Math.min(
-                    Math.max(valor, 0),
-                    TOTAL_ACERTOS
-                );
+            acertos = limitarAcertos(valor);
 
         }
 
@@ -468,6 +768,33 @@ async function enviarComando(comando) {
 }
 
 
+function arduinoNaoRespondeu() {
+
+    // Se o JOGO_INICIADO chegou nesse meio tempo,
+    // não há o que avisar.
+    if (!aguardandoArduino) return;
+
+    aguardandoArduino = false;
+
+    definirEstadoJogo(
+        "AGUARDANDO PARTIDA"
+    );
+
+    definirStatus(
+        "O Arduino não respondeu. Confira se o código " +
+        "novo foi gravado ou reinicie o Arduino.",
+        "error"
+    );
+
+    mostrarAviso(
+        "Arduino sem resposta."
+    );
+
+    atualizarControles();
+
+}
+
+
 async function iniciarPartida() {
 
     const nome =
@@ -487,7 +814,7 @@ async function iniciarPartida() {
     }
 
 
-    if (partidaAtiva) return;
+    if (emPartida()) return;
 
 
     if (!conectado) {
@@ -503,34 +830,44 @@ async function iniciarPartida() {
 
     participanteAtual = nome;
 
+    // O nível fica travado desde o início da partida
+    nivelPartida = nivelSelecionado;
+
     zerarPlacar();
+
+    aguardandoArduino = true;
+
+    atualizarControles();
+
+    definirEstadoJogo(
+        "INICIANDO..."
+    );
+
+    definirStatus(
+        "Aguardando o Arduino..."
+    );
 
 
     try {
 
-        await enviarComando("START");
-
-        partidaAtiva = true;
-
-        botaoIniciar.disabled = true;
-
-        definirEstadoJogo(
-            "PARTIDA EM ANDAMENTO",
-            "live"
+        await enviarComando(
+            `START|${NIVEIS[nivelPartida].tempo}`
         );
 
-        definirStatus(
-            `Valendo, ${participanteAtual}!`,
-            "live"
+        tempoEspera = setTimeout(
+            arduinoNaoRespondeu,
+            TEMPO_ESPERA_ARDUINO
         );
 
     } catch (erro) {
 
         console.error(erro);
 
+        aguardandoArduino = false;
+
         partidaAtiva = false;
 
-        atualizarBotaoIniciar();
+        atualizarControles();
 
         definirEstadoJogo(
             "AGUARDANDO PARTIDA"
@@ -549,6 +886,15 @@ async function iniciarPartida() {
 
 }
 
+
+// ==========================================
+// RANKING
+//
+// Cada resultado é guardado assim:
+// { nome, nivel, acertos, erros, tempoMedio }
+// Ordem: mais acertos, menos erros e, no desempate,
+// menor tempo médio de reação.
+// ==========================================
 
 function obterRanking() {
 
@@ -574,33 +920,62 @@ function obterRanking() {
 }
 
 
-function salvarResultado(
-    nome,
-    acertos,
-    erros
-) {
+function gravarRanking(lista) {
 
-    const ranking =
-        obterRanking();
+    try {
 
-    ranking.push({
-        nome,
-        acertos,
-        erros
-    });
+        localStorage.setItem(
+            CHAVE_RANKING,
+            JSON.stringify(lista)
+        );
 
-    ranking.sort(
-        (a, b) =>
-            b.acertos - a.acertos ||
-            a.erros - b.erros
+        return true;
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        mostrarAviso(
+            "Não foi possível salvar o ranking."
+        );
+
+        return false;
+
+    }
+
+}
+
+
+function compararResultados(a, b) {
+
+    return (
+        b.acertos - a.acertos ||
+        a.erros - b.erros ||
+        (a.tempoMedio ?? SEM_TEMPO) -
+        (b.tempoMedio ?? SEM_TEMPO)
     );
 
-    localStorage.setItem(
-        CHAVE_RANKING,
-        JSON.stringify(
-            ranking.slice(0, 10)
-        )
-    );
+}
+
+
+function salvarResultado(resultado) {
+
+    const todos = obterRanking();
+
+    todos.push(resultado);
+
+    // Aplica o teto de cada nível separadamente,
+    // mantendo os melhores resultados.
+    const mantidos =
+        Object.keys(NIVEIS).flatMap(
+            (id) =>
+                todos
+                    .filter((item) => item.nivel === id)
+                    .sort(compararResultados)
+                    .slice(0, LIMITE_POR_NIVEL)
+        );
+
+    gravarRanking(mantidos);
 
 }
 
@@ -608,7 +983,11 @@ function salvarResultado(
 function mostrarRanking() {
 
     const ranking =
-        obterRanking();
+        obterRanking()
+            .filter(
+                (item) => item.nivel === nivelRanking
+            )
+            .sort(compararResultados);
 
     corpoRanking.innerHTML = "";
 
@@ -627,6 +1006,7 @@ function mostrarRanking() {
                 <td>${escaparHTML(item.nome)}</td>
                 <td>${item.acertos}</td>
                 <td>${item.erros}</td>
+                <td>${formatarTempo(item.tempoMedio)}</td>
             `;
 
             corpoRanking.appendChild(
@@ -655,11 +1035,27 @@ function finalizarPartida() {
 
     partidaAtiva = false;
 
-    salvarResultado(
-        participanteAtual || "Participante",
+    aguardandoArduino = false;
+
+    clearTimeout(tempoEspera);
+
+    const nome =
+        participanteAtual || "Participante";
+
+    const tempoMedio = calcularMedia();
+
+    salvarResultado({
+        nome,
+        nivel: nivelPartida,
         acertos,
-        erros
-    );
+        erros,
+        tempoMedio
+    });
+
+    // Mostra o ranking do nível que acabou de ser jogado
+    nivelRanking = nivelPartida;
+
+    atualizarNiveis();
 
     mostrarRanking();
 
@@ -669,9 +1065,14 @@ function finalizarPartida() {
     );
 
     definirStatus(
-        `${participanteAtual || "Participante"}: ` +
-        `${acertos} acertos e ` +
-        `${erros} erros. Resultado salvo.`,
+        `${nome} (${NIVEIS[nivelPartida].nome}): ` +
+        `${acertos} acertos e ${erros} erros` +
+        (
+            tempoMedio === null
+                ? ""
+                : `, tempo médio ${formatarTempo(tempoMedio)}`
+        ) +
+        `. Resultado salvo.`,
         "live"
     );
 
@@ -679,10 +1080,14 @@ function finalizarPartida() {
         "Partida encerrada e salva no ranking."
     );
 
-    atualizarBotaoIniciar();
+    atualizarControles();
 
 
     setTimeout(() => {
+
+        // Se já começou outra partida nesse meio tempo,
+        // não mexe no placar dela.
+        if (emPartida()) return;
 
         participanteAtual = "";
 
@@ -700,7 +1105,7 @@ function finalizarPartida() {
                 : "Conecte o Arduino para começar."
         );
 
-        atualizarBotaoIniciar();
+        atualizarControles();
 
     }, 1200);
 
@@ -711,10 +1116,20 @@ botaoLimparRanking.addEventListener(
     "click",
     () => {
 
-        if (!obterRanking().length) {
+        const nomeNivel =
+            NIVEIS[nivelRanking].nome;
+
+        const todos = obterRanking();
+
+        const restantes =
+            todos.filter(
+                (item) => item.nivel !== nivelRanking
+            );
+
+        if (restantes.length === todos.length) {
 
             mostrarAviso(
-                "O ranking já está vazio."
+                `O ranking do nível ${nomeNivel} já está vazio.`
             );
 
             return;
@@ -723,21 +1138,19 @@ botaoLimparRanking.addEventListener(
 
         if (
             !window.confirm(
-                "Apagar todos os resultados salvos neste navegador?"
+                `Apagar todos os resultados do nível ${nomeNivel}?`
             )
         ) {
             return;
         }
 
 
-        localStorage.removeItem(
-            CHAVE_RANKING
-        );
+        if (!gravarRanking(restantes)) return;
 
         mostrarRanking();
 
         mostrarAviso(
-            "Ranking apagado."
+            `Ranking do nível ${nomeNivel} apagado.`
         );
 
     }
@@ -757,7 +1170,7 @@ botaoIniciar.addEventListener(
 
 nomeParticipante.addEventListener(
     "input",
-    atualizarBotaoIniciar
+    atualizarControles
 );
 
 
@@ -813,8 +1226,10 @@ if ("serial" in navigator) {
 }
 
 
+montarNiveis();
+
 atualizarPlacar();
 
 mostrarRanking();
 
-atualizarBotaoIniciar();
+atualizarControles();
