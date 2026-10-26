@@ -32,7 +32,7 @@ const int ECHO_ESQUERDA = 7;
 const int META_PONTOS = 10;
 
 // Distância (cm) que conta como "mão no sensor"
-const int DISTANCIA_ACERTO = 25;
+const int DISTANCIA_ACERTO = 15;
 
 // Tempo que cada alvo fica aceso, em ms.
 // Normalmente quem define é o site, pelo comando
