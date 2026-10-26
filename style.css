@@ -67,20 +67,24 @@ button {
 }
 
 .marca-simbolo {
-    width: 55px;
-    height: 55px;
+    width: 45px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    border-radius: 12px;
+    border: 1px solid #294333;
+    border-radius: 10px;
+    flex-shrink: 0;
 }
 
 .marca-simbolo img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
+
 .rotulo {
     margin: 0;
     color: var(--muted);
