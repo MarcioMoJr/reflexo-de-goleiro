@@ -55,7 +55,7 @@ const SEM_TEMPO = 1e9;
 const NIVEIS = {
     facil:   { nome: "Fácil",   tempo: 2000 },
     normal:  { nome: "Normal",  tempo: 1500 },
-    dificil: { nome: "Difícil", tempo: 500}
+    dificil: { nome: "Difícil", tempo: 800}
 };
 
 const NIVEL_PADRAO = "normal";
